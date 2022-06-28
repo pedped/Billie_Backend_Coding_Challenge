@@ -64,7 +64,6 @@ class UserController extends AbstractController
         $lastName = $request->request->get('last_name');
         $plainPassword = $request->request->get('password');
 
-
         // create admin user
         $user = new User();
         $user->setEmail($email);

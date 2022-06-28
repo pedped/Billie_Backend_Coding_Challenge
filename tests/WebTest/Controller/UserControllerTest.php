@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\WebTest\Controller;
 
 use App\Entity\User;
-use App\Helpers\StringHelper;
-use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Console\Helper\Helper;
 
 class UserControllerTest extends WebTestCase
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
-    private \Doctrine\ORM\EntityManager $entityManager;
+    private EntityManager $entityManager;
 
     public function test_create_user(): void
     {
@@ -26,10 +24,8 @@ class UserControllerTest extends WebTestCase
             ->get('doctrine')
             ->getManager();
 
-
         // get repository
         $userRepository = $this->entityManager->getRepository(User::class);
-
 
         // try to get number of the users
         $usersCount = $userRepository->count([]);
@@ -52,10 +48,12 @@ class UserControllerTest extends WebTestCase
         $values = json_decode(json_decode($client->getResponse()->getContent(), true), true);
 
         // check for the count
-        $this->assertCount(1, $newUsersCount - $usersCount);
+        $this->assertEquals(1, $newUsersCount - $usersCount);
 
         // check if all values exists
         $this->assertArrayHasKey("userId", $values);
     }
+
+
 
 }

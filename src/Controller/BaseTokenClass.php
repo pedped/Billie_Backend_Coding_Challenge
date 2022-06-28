@@ -30,8 +30,6 @@ class BaseTokenClass extends AbstractController
         ]);
 
         if (!$tokenModel) {
-
-            // TODO try to send back json format
             $result = new \stdClass();
             $result->message = 'Invalid user/token provided';
             $response = new Response(json_encode($result));

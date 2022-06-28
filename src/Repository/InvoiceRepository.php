@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Invoice;
 use App\Entity\InvoiceLineItem;
 use App\Enums\InvoicePayedStatus;
+use App\Exceptions\DebtorLimitException;
 use App\Helpers\StringHelper;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -76,8 +77,8 @@ class InvoiceRepository extends ServiceEntityRepository
             "companyId" => $company->getId(),
             "payed" => InvoicePayedStatus::$NOT_PAYED
         ]);
-        if ($unPayedInvoice > $company->getDebtorLimit()) {
-            throw new \Exception('This company reached its debtor limit, wait for users to pay invoices');
+        if ($unPayedInvoice >= $company->getDebtorLimit()) {
+            throw new DebtorLimitException('This company reached its debtor limit, wait for users to pay invoices');
         }
 
         // now, load the line items
@@ -131,11 +132,12 @@ class InvoiceRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param $userId
      * @param int $invoiceId
      * @return void
      * @throws \Exception
      */
-    public function setPayed(int $invoiceId)
+    public function setPaid($userId, int $invoiceId)
     {
         // find invoice by id
         $invoice = $this->findOneBy([
@@ -150,9 +152,9 @@ class InvoiceRepository extends ServiceEntityRepository
             throw new \Exception('Invoice payed before');
         }
 
-        // invoice is not payed before, make it as payed
+        // invoice is not paid before, make it as paid
         $invoice->setPayed(InvoicePayedStatus::$PAYED);
-        $invoice->setPayedByUserId($this->loggedInUser->getId());
+        $invoice->setPayedByUserId($userId);
         $invoice->setPayedDate(new \DateTime('@' . time()));
         $this->getEntityManager()->persist($invoice);
         $this->getEntityManager()->flush();

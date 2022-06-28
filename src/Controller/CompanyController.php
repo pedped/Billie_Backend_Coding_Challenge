@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Company;
 use App\Enums\CompanyStatus;
 use App\Repository\CompanyRepository;
+use App\Texts\ResponseMessages;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +27,6 @@ class CompanyController extends BaseTokenClass
         $phoneNumber = $request->request->get('phone_number');
         $vatNumber = $request->request->get('vat_number');
 
-        $entityManager = $doctrine->getManager();
 
         // create admin user
         $company = new Company();
@@ -46,7 +46,7 @@ class CompanyController extends BaseTokenClass
 
 
         return $this->json([
-            'message' => 'Company created successfully',
+            'message' => ResponseMessages::$COMPANY_CREATED_SUCCESSFULLY,
             'company_id' => $company->getId(),
         ]);
 

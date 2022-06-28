@@ -297,7 +297,9 @@ there is lots of tests for this project, to tun tests, please execute this comma
    <li>
       I have used general Exception for exceptions, but it is best practice to use custom exception for each error
    </li>
-
+   <li>
+   Based on BDD, we have to make a behavior testing, so the class tests\BehaviorTesting\InvoiceManagementTest.php check for invoice reach logic 
+</li>
 </ul>
 
 
@@ -308,6 +310,12 @@ there is lots of tests for this project, to tun tests, please execute this comma
    </li>
    <li>
       Add Mock tests
+   </li>
+   <li>
+      Add unit test for models and repositories 
+   </li>
+ <li>
+      Use separate database for testing  
    </li>
 </ul>
 

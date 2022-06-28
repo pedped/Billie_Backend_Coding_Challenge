@@ -8,6 +8,7 @@ use App\Enums\InvoicePayedStatus;
 use App\Helpers\StringHelper;
 use App\Repository\CompanyRepository;
 use App\Repository\InvoiceRepository;
+use App\Texts\ResponseMessages;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +52,7 @@ class InvoiceController extends BaseTokenClass
         }
 
         return $this->json([
-            'message' => 'Invoice created successfully',
+            'message' => ResponseMessages::$INVOICE_CREATED_SUCCESSFULLY,
             'invoice_id' => $invoice->getId(),
             'invoice_number' => $invoice->getNumber(),
         ]);
@@ -70,7 +71,7 @@ class InvoiceController extends BaseTokenClass
         $invoiceId = $request->request->get('invoice_id');
 
         try {
-            $invoiceRepository->setPayed($invoiceId);
+            $invoiceRepository->setPaid($this->loggedInUser->getId(), $invoiceId);
         } catch (\Exception $exception) {
             return $this->json([
                 'error' => $exception->getMessage(),
@@ -78,7 +79,7 @@ class InvoiceController extends BaseTokenClass
         }
 
         return $this->json([
-            'message' => 'Invoice payed successfully, thank you!',
+            'message' => ResponseMessages::$INVOICE_PAYED_SUCCESSFULLY,
         ]);
 
     }
